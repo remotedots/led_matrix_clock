@@ -32,7 +32,7 @@ A2  → pin  4 (row 6)     A3  → pin 10 (row 5)
 - [RTClib](https://github.com/adafruit/RTClib)
 
 > **Note:** Arduino IDE 2.1.0.5 produces a much brighter display than newer versions.
-> Newer AVR cores added overhead to `digitalWrite`, reducing the duty cycle of the multiplexed matrix and dimming the display.
+> The display multiplexing has no explicit hold time — each LED is on only for as long as the surrounding code takes to execute. Newer IDE versions ship with a newer `avr-gcc` that generates faster code, which shortens that accidental hold and dims the display.
 > A symlink to the older Time library may be required - see the RTClib DS3231 examples for reference.
 
 ## Setup

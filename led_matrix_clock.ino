@@ -5,7 +5,7 @@
 #include <Wire.h>
 #include <EEPROM.h>
 
-#define DEBUG 0
+#define DEBUG 1
 
 /**
  *  Arduino Nano v3.0
@@ -57,6 +57,7 @@ const int LED_STATE_OFF    =   0;
 const int LED_STATE_ON     =   1;
 
 const int REFRESH_RATE     = 200;
+const int LED_HOLD_US      =  20;  // on-time per LED in µs; increase to brighten
 
 const uint8_t EEPROM_MAGIC      = 0xAB;
 const int     EEPROM_ADDR_MAGIC = 0;
@@ -221,8 +222,10 @@ void drawBuffer() {
   else
     stopPoint = bufferOffset * MATRIX_H - ledOffset * MATRIX_H + (BUFFER_W - bufferOffset) * MATRIX_H;
   for (int i = startPoint; i < stopPoint; i++) {
-    if (buffer[i / 8][i % 8] == 1)
+    if (buffer[i / 8][i % 8] == 1) {
       ledOn((i - startPoint) / 8 + ledOffset, (i - startPoint) % 8);
+      delayMicroseconds(LED_HOLD_US);
+    }
     ledOff((i - startPoint) / 8 + ledOffset, (i - startPoint) % 8);
   }
 }
