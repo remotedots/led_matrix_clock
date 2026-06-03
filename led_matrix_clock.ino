@@ -58,7 +58,12 @@ const int LED_STATE_ON     =   1;
 
 const int REFRESH_RATE     = 200;
 
-const int TIME_ZONE        =  +1;
+const uint8_t EEPROM_MAGIC      = 0xAB;
+const int     EEPROM_ADDR_MAGIC = 0;
+const int     EEPROM_ADDR_TZ    = 1;
+const int     TIME_ZONE_DEFAULT = +1;  // fallback if EEPROM not initialised
+
+int8_t TIME_ZONE = TIME_ZONE_DEFAULT;
 
 time_t currentTime;
 String currentTimeStr;
@@ -70,7 +75,6 @@ int buffer[BUFFER_W][BUFFER_H]  = {0};
 int bufferWidth  = 0;
 int bufferOffset = 0;
 int ledOffset    = 7;
-int addr_flag_WT = 0;
 
 RTC_DS3231 rtc;
 
@@ -262,6 +266,9 @@ String timeToStr(time_t t) {
 }
 
 void setup() {
+  if (EEPROM.read(EEPROM_ADDR_MAGIC) == EEPROM_MAGIC)
+    TIME_ZONE = (int8_t)EEPROM.read(EEPROM_ADDR_TZ);
+
   if (DEBUG) {
     Serial.begin(9600);
     if (! rtc.begin()) {
