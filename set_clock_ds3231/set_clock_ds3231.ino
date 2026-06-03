@@ -16,6 +16,16 @@ void printDateTime(const DateTime& dt) {
   Serial.print(buf);
 }
 
+// European DST: last Sunday of March 01:00 UTC to last Sunday of October 01:00 UTC.
+// Pass UTC time and the standard (winter) offset.
+bool isSummerTime(int year, int month, int day, int hour, int baseTz) {
+  if (month < 3 || month > 10) return false;
+  if (month > 3 && month < 10) return true;
+  if (month == 3)
+    return (hour + 24 * day) >= (1 + baseTz + 24 * (31 - (5 * year / 4 + 4) % 7));
+  return (hour + 24 * day) < (1 + baseTz + 24 * (31 - (5 * year / 4 + 1) % 7));
+}
+
 void setup() {
   Serial.begin(9600);
   delay(2000);
@@ -34,34 +44,36 @@ void setup() {
   printDateTime(localTime);
   Serial.println();
   Serial.println();
-  Serial.println("Enter your UTC offset and press Enter.");
-  Serial.println("Examples: 2 for UTC+2, -5 for UTC-5");
+  Serial.println("Enter your current UTC offset and press Enter.");
+  Serial.println("Examples: 2 for CEST, 1 for CET, -5 for EST");
   Serial.print("> ");
 
   while (Serial.available() == 0) {}
-  int8_t tz = (int8_t)Serial.parseInt();
+  int8_t localOffset = (int8_t)Serial.parseInt();
 
-  // UTC = local time - offset
-  DateTime utcTime = localTime - TimeSpan((int32_t)tz * 3600);
+  // Compute UTC from local time
+  DateTime utcTime = localTime - TimeSpan((int32_t)localOffset * 3600);
 
-  Serial.println(tz);
+  // Strip DST to get the base (standard/winter) timezone for EEPROM.
+  // The clock sketch applies DST automatically on top of the base offset.
+  int8_t baseTz = localOffset;
+  if (isSummerTime(utcTime.year(), utcTime.month(), utcTime.day(), utcTime.hour(), localOffset - 1))
+    baseTz = localOffset - 1;
+
+  Serial.println(localOffset);
   Serial.println();
-  Serial.print("Setting RTC to UTC:      ");
+  Serial.print("UTC saved to RTC:     ");
   printDateTime(utcTime);
   Serial.println();
-  Serial.print("Your local time (UTC");
-  if (tz >= 0) Serial.print("+");
-  Serial.print(tz);
-  Serial.print("):  ");
-  printDateTime(localTime);
+  Serial.print("Base timezone saved:  UTC");
+  if (baseTz >= 0) Serial.print("+");
+  Serial.println(baseTz);
   Serial.println();
+  Serial.println("Done. You can now upload the clock sketch.");
 
   rtc.adjust(utcTime);
   EEPROM.write(EEPROM_ADDR_MAGIC, EEPROM_MAGIC);
-  EEPROM.write(EEPROM_ADDR_TZ, (uint8_t)tz);
-
-  Serial.println();
-  Serial.println("Done. You can now upload the clock sketch.");
+  EEPROM.write(EEPROM_ADDR_TZ, (uint8_t)baseTz);
 }
 
 void loop() {
