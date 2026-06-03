@@ -6,11 +6,11 @@ A scrolling clock on an 8×8 LED matrix driven by an Arduino Nano and a DS3231 R
 
 ## Hardware
 
-| Component | Notes |
-|-----------|-------|
-| Arduino Nano v3.0 | Set board to **Nano** in Arduino IDE |
-| 8×8 LED matrix | Common-cathode, single module |
-| DS3231 RTC | Connected via I2C (A4 = SDA, A5 = SCL) |
+| Component         | Notes                                  |
+| ----------------- | -------------------------------------- |
+| Arduino Nano v3.0 | Set board to **Nano** in Arduino IDE   |
+| 8×8 LED matrix    | Common-cathode, single module          |
+| DS3231 RTC        | Connected via I2C (A4 = SDA, A5 = SCL) |
 
 ## Wiring
 
@@ -28,11 +28,12 @@ A2  → pin  4 (row 6)     A3  → pin 10 (row 5)
 
 ## Libraries
 
-- [Time](https://github.com/PaulStoffregen/Time) — use the older version (see note below)
+- [Time](https://github.com/PaulStoffregen/Time) - use the older version (see note below)
 - [RTClib](https://github.com/adafruit/RTClib)
 
 > **Note:** Arduino IDE 2.1.0.5 produces a much brighter display than newer versions.
-> A symlink to the older Time library may be required — see the RTClib DS3231 examples for reference.
+> Newer AVR cores added overhead to `digitalWrite`, reducing the duty cycle of the multiplexed matrix and dimming the display.
+> A symlink to the older Time library may be required - see the RTClib DS3231 examples for reference.
 
 ## Setup
 
@@ -40,7 +41,7 @@ A2  → pin  4 (row 6)     A3  → pin 10 (row 5)
 
 Open `set_clock_ds3231/set_clock_ds3231.ino` in the Arduino IDE and upload it. The sketch captures the local time at compile time (`__DATE__` / `__TIME__`), then asks for your UTC offset via the Serial Monitor.
 
-> **Note:** Upload promptly after clicking **Upload** — the RTC will be off by however long the upload and boot take (typically 30–60 seconds). For a clock showing HH:MM this is acceptable.
+> **Note:** Type the UTC offset promptly after clicking **Upload**. The RTC will be off by however long the upload and boot take (typically 30–60 seconds). For a clock showing HH:MM this is acceptable.
 
 ### 2. Upload the clock sketch
 
