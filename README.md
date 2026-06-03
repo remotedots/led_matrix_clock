@@ -28,12 +28,8 @@ A2  → pin  4 (row 6)     A3  → pin 10 (row 5)
 
 ## Libraries
 
-- [Time](https://github.com/PaulStoffregen/Time) - use the older version (see note below)
+- [Time](https://github.com/PaulStoffregen/Time)
 - [RTClib](https://github.com/adafruit/RTClib)
-
-> **Note:** Arduino IDE 2.1.0.5 produces a much brighter display than newer versions.
-> The display multiplexing has no explicit hold time — each LED is on only for as long as the surrounding code takes to execute. Newer IDE versions ship with a newer `avr-gcc` that generates faster code, which shortens that accidental hold and dims the display.
-> A symlink to the older Time library may be required - see the RTClib DS3231 examples for reference.
 
 ## Setup
 
@@ -45,10 +41,12 @@ Open `set_clock_ds3231/set_clock_ds3231.ino` in the Arduino IDE and upload it. T
 
 ### 2. Upload the clock sketch
 
-Open `led_matrix_clock.ino` in the Arduino IDE and upload to the Nano.
+Open `led_matrix_clock.ino` in the Arduino IDE.
+
+Set `#define DEBUG 1` in `led_matrix_clock.ino` to enable serial output of the time read from the RTC (optional).
+
+Change `LED_HOLD_US` in `led_matrix_clock.ino` to control brightness (default: 20 µs per LED per scan cycle). Increase to brighten, decrease to dim.
+
+Upload to the Nano.
 
 DST (European summer/winter time) is applied automatically at startup. The RTC stores UTC; the timezone offset entered during step 1 is saved to EEPROM and read by the clock sketch on every boot.
-
-### 3. Debug mode
-
-Set `#define DEBUG 1` in `led_matrix_clock.ino` to enable serial output of the time read from the RTC.
