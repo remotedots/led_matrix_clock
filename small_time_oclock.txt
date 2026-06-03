@@ -1,0 +1,4 @@
+Small_time_o‘clock
+Lichtinstallation / Uhr, 2017
+Eine umgebaute Bühnenleuchte zeigt auf einem 8x8 LED-Display die aktuelle Uhrzeit.
+LEDs, Arduino, RTC-Modul, PAR-Gehäuse.
