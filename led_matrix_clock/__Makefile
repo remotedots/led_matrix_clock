@@ -1,6 +1,6 @@
 ARDUINO_DIR  = /usr/share/arduino
 
-ARDUINO_SKETCHBOOK = $(HOME)/work
+ARDUINO_SKETCHBOOK = $(HOME)/playground
 
 TARGET       = CLItest
 ARDUINO_LIBS = Time libCharacters
