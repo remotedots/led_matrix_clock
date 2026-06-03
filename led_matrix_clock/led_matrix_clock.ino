@@ -1,6 +1,7 @@
 #include "libCharacters.h"
 #include <Time.h>
 #include <RTClib.h>
+#include <DST_RTC.h>
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -66,6 +67,9 @@ int bufferOffset = 0;
 int ledOffset    = 7;
 
 RTC_DS3231 rtc;
+DST_RTC dst_rtc;
+
+const char rulesDST[] = "EU";
 
 void initPins() {
 
@@ -120,14 +124,16 @@ void initTime(int h = 23, int m = 43, int s = 45) {
 
   if (rtc.begin()) {
     DateTime curTime = rtc.now();
+    
+    if (dst_rtc.checkDST(curTime) == true)
+      curTime = curTime.unixtime() - 3600;
+
     h = curTime.hour();
     m = curTime.minute();
     s = curTime.second();
   }
 
   setTime(h, m, s, 1, 1, 2000);
-  adjustTime(-3600);
-
 }
 
 
