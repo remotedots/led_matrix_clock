@@ -1,0 +1,11 @@
+ARDUINO_DIR  = /usr/share/arduino
+
+ARDUINO_SKETCHBOOK = $(HOME)/work
+
+TARGET       = CLItest
+ARDUINO_LIBS = Time libCharacters
+
+BOARD_TAG    = nano328
+ARDUINO_PORT = /dev/ttyUSB0
+
+include /usr/share/arduino/Arduino.mk
