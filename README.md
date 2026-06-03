@@ -38,20 +38,15 @@ A2  → pin  4 (row 6)     A3  → pin 10 (row 5)
 
 ### 1. Set the RTC time
 
-Edit and upload `set_clock_ds3231/set_clock_ds3231.ino` using the Makefile, which automatically injects the current UTC time at compile time:
+Open `set_clock_ds3231/set_clock_ds3231.ino` in the Arduino IDE and upload it. The sketch captures the local time at compile time (`__DATE__` / `__TIME__`), then asks for your UTC offset via the Serial Monitor.
 
-```bash
-cd set_clock_ds3231
-make upload
-```
-
-The Makefile passes the current UTC time via `-DUTC_YEAR`, `-DUTC_MONTH`, etc.
+> **Note:** Upload promptly after clicking **Upload** — the RTC will be off by however long the upload and boot take (typically 30–60 seconds). For a clock showing HH:MM this is acceptable.
 
 ### 2. Upload the clock sketch
 
 Open `led_matrix_clock.ino` in the Arduino IDE and upload to the Nano.
 
-DST (European summer/winter time) is applied automatically at startup. The timezone base is **CET (UTC+1)**; the RTC should always be set to **UTC**.
+DST (European summer/winter time) is applied automatically at startup. The RTC stores UTC; the timezone offset entered during step 1 is saved to EEPROM and read by the clock sketch on every boot.
 
 ### 3. Debug mode
 
